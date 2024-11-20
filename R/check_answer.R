@@ -10,7 +10,6 @@
 #'
 #' @return character, The response from the chatbot
 #' @export
-#' @importFrom gemini.R gemini_chat
 check_answer <- function(question, answer, solution = NULL,
                          preamble = construct_preamble())
 {
@@ -26,8 +25,9 @@ check_answer <- function(question, answer, solution = NULL,
                    sep = '\n')
   }
 
-  gemini_chat(query)
+  genAI_query(query)
 }
+
 
 #' construct_preamble
 #' Construct the preamble for the query
@@ -62,3 +62,4 @@ construct_preamble <- function(course = NULL, altPreamble = NULL)
 
   return(retval)
 }
+
