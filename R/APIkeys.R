@@ -19,7 +19,7 @@ getAPIkey <- function(key_name, ...)
   if(Sys.getenv(key_name) != "")
     return(Sys.getenv(key_name))
 
-  return(op(key_name))
+  op(...)
 }
 
 
