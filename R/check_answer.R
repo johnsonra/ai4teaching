@@ -47,6 +47,7 @@ construct_preamble <- function(course = NULL, altPreamble = NULL)
   {
     retval <- paste("I'm taking a quiz.",
                     "If my answer is correct, please confirm.",
+                    "If my answer is correct but could be better, please confirm and offer suggestions on how it could be better.",
                     "Otherwise give me feedback on my answer.",
                     "I want to know if I am on the right track.",
                     "Do not give me the answer to the question.",

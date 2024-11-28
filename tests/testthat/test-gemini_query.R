@@ -3,7 +3,8 @@
 test_that("query works",
 {
   # the system will need to be set up correctly for this to work
-  key <- try(getAPIKey("GEMINI_API_KEY", "Private", "Gemini", "api_key"),
+  key <- try(OPsecrets::get_secret("GEMINI_API_KEY",
+                                   "Private", "Gemini", "api_key"),
              silent = TRUE)
 
   # skip the remaining tests if the API key is not found
