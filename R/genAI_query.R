@@ -8,6 +8,7 @@
 #'
 #' @details This function queries a specific model with the provided query. The package only supports Gemini at this time, but support for OpenAI will soon be added.
 #'
+#' @return character, The response from the chatbot
 #' @export
 genAI_query <- function(query, model = 'gemini-1.5-flash', history = NULL, ...)
 {

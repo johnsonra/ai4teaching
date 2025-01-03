@@ -16,6 +16,9 @@ genAI_query(query, model = "gemini-1.5-flash", history = NULL, ...)
 
 \item{...}{Additional arguments passed to the function handling the query (i.e. `google_genAI`)}
 }
+\value{
+character, The response from the chatbot
+}
 \description{
 genAI_query
 Query a genAI chatbot

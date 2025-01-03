@@ -9,7 +9,8 @@ check_answer(
   question,
   answer,
   solution = NULL,
-  preamble = construct_preamble()
+  preamble = construct_preamble(),
+  ...
 )
 }
 \arguments{
@@ -20,9 +21,11 @@ check_answer(
 \item{solution}{character, The solution of the question}
 
 \item{preamble}{character, The preamble for the query}
+
+\item{...}{variables passed on to `genAI_query` (e.g. `model` or `api_key`)}
 }
 \value{
-character, The response from the chatbot
+An object from learnr::correct() or learnr::incorrect()
 }
 \description{
 check_answer

@@ -1,6 +1,6 @@
 Package: ai4teaching
 Title: AI for Teaching
-Version: 0.0-3
+Version: 0.0-4
 Authors@R: c(person('Randy', 'Johnson', email = 'randall.johnson@nih.gov',
                     role = c('cre', 'aut')))
 Description: Utility package with tools for integrating AI into teaching.
@@ -10,7 +10,9 @@ Remotes: johnsonra/OPsecrets
 Imports:
   cli,
   httr2,
-  OPsecrets
+  learnr,
+  OPsecrets,
+  stringr
 Encoding: UTF-8
 URL: https://github.com/johnsonra/ai4teaching
 Language: en-US
