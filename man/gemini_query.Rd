@@ -5,7 +5,15 @@
 \title{gemini_query
 Query Gemini}
 \usage{
-gemini_query(prompt, model = "gemini-1.5-flash", history = NULL, ...)
+gemini_query(
+  prompt,
+  model = "gemini-1.5-flash",
+  history = NULL,
+  temperature = 0.5,
+  maxOutputTokens = 1024,
+  api_key = NULL,
+  ...
+)
 }
 \arguments{
 \item{prompt}{character, the query for the chatbot}
@@ -13,6 +21,12 @@ gemini_query(prompt, model = "gemini-1.5-flash", history = NULL, ...)
 \item{model}{character, the model to use (see https://ai.google.dev/gemini-api/docs/models/gemini for options)}
 
 \item{history}{list, a list of previous interactions in the conversation}
+
+\item{temperature}{numeric, a value between 0 and 2 that controls the randomness of the model (default = 0.5)}
+
+\item{maxOutputTokens}{integer, the maximum number of tokens to output (default = 1024)}
+
+\item{api_key}{character, an API key for Gemini (default = NULL)}
 
 \item{...}{Other parameters controlling model behavior (see details)}
 }
@@ -25,11 +39,6 @@ Query Gemini
 }
 \details{
 This function queries a specific Gemini model with the provided query. To obtain a Gemini API key see https://aistudio.google.com/app/apikey.
-
-Additional parameters recognized by this function are:
-  - `api_key`: an API key for Gemini (default = OPsecrets::get_secret("GEMINI_API_KEY"))
-  - `temperature`: a value between 0 and 2 that controls the randomness of the model (default = 0.5)
-  - `maxOutputTokens`: the maximum number of tokens to output (default = 1024)
 }
 \references{
 This is a modified version of functions provided in the `gemini.R` package (see https://github.com/jhk0530/gemini.R). The main difference is that this function gives the user more control over which model is used, allowing for use of newer models without the need for modifying the code.

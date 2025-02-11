@@ -27,14 +27,12 @@ genAI_query <- function(query, model = 'gemini-1.5-flash', history = NULL, ...)
 #' @param prompt character, the query for the chatbot
 #' @param model character, the model to use (see https://ai.google.dev/gemini-api/docs/models/gemini for options)
 #' @param history list, a list of previous interactions in the conversation
+#' @param temperature numeric, a value between 0 and 2 that controls the randomness of the model (default = 0.5)
+#' @param maxOutputTokens integer, the maximum number of tokens to output (default = 1024)
+#' @param api_key character, an API key for Gemini (default = NULL)
 #' @param ... Other parameters controlling model behavior (see details)
 #'
 #' @details This function queries a specific Gemini model with the provided query. To obtain a Gemini API key see https://aistudio.google.com/app/apikey.
-#'
-#' Additional parameters recognized by this function are:
-#'   - `api_key`: an API key for Gemini (default = OPsecrets::get_secret("GEMINI_API_KEY"))
-#'   - `temperature`: a value between 0 and 2 that controls the randomness of the model (default = 0.5)
-#'   - `maxOutputTokens`: the maximum number of tokens to output (default = 1024)
 #'
 #' @seealso https://ai.google.dev/gemini-api/docs, https://github.com/johnsonra/OPsecrets
 #' @references This is a modified version of functions provided in the `gemini.R` package (see https://github.com/jhk0530/gemini.R). The main difference is that this function gives the user more control over which model is used, allowing for use of newer models without the need for modifying the code.
@@ -44,24 +42,16 @@ genAI_query <- function(query, model = 'gemini-1.5-flash', history = NULL, ...)
 #' @importFrom cli cli_alert_danger cli_status cli_status_clear
 #' @importFrom httr2 request req_url_query req_headers req_body_json req_perform resp_body_json
 #' @importFrom OPsecrets get_secret
-gemini_query <- function(prompt, model = "gemini-1.5-flash", history = NULL, ...)
+gemini_query <- function(prompt, model = "gemini-1.5-flash", history = NULL, temperature = 0.5,
+                         maxOutputTokens = 1024, api_key = NULL, ...)
 {
-  # handle optional parameters and defaults
-  optional <- list(...)
-
-  if(is.null(optional$temperature))
-    optional$temperature <- 0.5
-
-  if(is.null(optional$maxOutputTokens))
-    optional$maxOutputTokens <- 1024
-
-  if(is.null(optional$api_key))
-    optional$api_key <- get_secret("GEMINI_API_KEY")
+  if(is.null(api_key))
+    api_key <- get_secret("GEMINI_API_KEY")
 
   if(is.null(history))
   {
     history <- list()
-    class(history) <- c('gemini_history', 'list')
+    class(history) <- c('query_history', 'list')
   }
 
 
@@ -72,12 +62,12 @@ gemini_query <- function(prompt, model = "gemini-1.5-flash", history = NULL, ...
     return(NULL)
   }
 
-  if (optional$api_key == "" | is.null(optional$api_key)) {
+  if(api_key == "" | is.null(api_key)) {
     cli_alert_danger("Please either set {.envvar GEMINI_API_KEY} with {.fn Sys.setenv} or provide an appropriate API key.")
     return(NULL)
   }
 
-  if (optional$temperature < 0 | optional$temperature > 2) {
+  if (temperature < 0 | temperature > 2) {
     cli_alert_danger("Error: temperature must be between 0 and 2")
     return(NULL)
   }
@@ -97,13 +87,13 @@ gemini_query <- function(prompt, model = "gemini-1.5-flash", history = NULL, ...
   sb <- cli_status("Gemini is answering...")
   req <- paste0(url, model_query) |>
     request() |>
-    req_url_query(key = optional$api_key) |>
+    req_url_query(key = api_key) |>
     req_headers("Content-Type" = "application/json") |>
     req_body_json(list(
       contents = prompt_w_history,
       generationConfig = list(
-        temperature = optional$temperature,
-        maxOutputTokens = optional$maxOutputTokens
+        temperature = temperature,
+        maxOutputTokens = maxOutputTokens
       )
     ))
 
@@ -120,8 +110,10 @@ gemini_query <- function(prompt, model = "gemini-1.5-flash", history = NULL, ...
     addHistory(role = "model", item = response)
 
   retval <- list(response = response,
-                 history = history_updt)
-  class(retval) <- c('gemini_response', 'list')
+                 history = history_updt,
+                 base_url = url,
+                 model = model)
+  class(retval) <- c('query_response', 'list')
 
   return(retval)
 }

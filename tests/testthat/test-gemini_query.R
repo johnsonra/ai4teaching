@@ -15,6 +15,6 @@ test_that("query works",
 
   res <- gemini_query("What is 2 + 2?", 'gemini-1.5-pro', api_key = key)
 
-  expect_true("gemini_response" %in% class(res))
-  expect_true("gemini_history" %in% class(res$history))
+  expect_s3_class(res,         "query_response")
+  expect_s3_class(res$history, "query_history")
 })

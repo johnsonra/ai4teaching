@@ -18,5 +18,5 @@ addHistory(history, role, item)
 The history of chat
 }
 \description{
-Add history for chating context
+Add history for chatting context
 }

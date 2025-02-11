@@ -5,7 +5,7 @@
 #' @param role The role of chat: "user" or "model"
 #' @param item The item of chat: "prompt" or "output"
 #'
-#' @description Add history for chating context
+#' @description Add history for chatting context
 #'
 #' @return The history of chat
 addHistory <- function(history, role, item)
