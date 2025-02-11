@@ -77,7 +77,7 @@ check_answer("Given two variables, `x` and `y`, provide a line of R code that wi
              "x == y")
 ```
 
-    Correct.  To make it more robust, you could wrap it in an `if` statement to explicitly handle the comparison result.
+    Incorrect.  Your code checks if `x` is *equal* to `y`, not if it's greater than `y`.  Think about the operators used for comparisons like greater than or less than.
 
 In the example above, the model affirms the solution is correct and gives some additional feedback that might make the solution better. If it is not correct, we would like the model to give us feedback without giving the answer away. `check_answer` also includes a `preamble` argument that instructs the model to give feedback rather than to correct mistakes. The default preamble is
 
@@ -114,15 +114,12 @@ If we try again with the correct answer we get the following:
 
 ## Models
 
-Below is a list of models that have been tested along with some comments.
+Below is a list of models that have been tested along with some comments. OpenAI is on the short list to implement in this package, but it is not a current option.
 
-* Gemini: Additional (untested) models are available from Gemini, and they should work. See [Gemini documentation](https://ai.google.dev/gemini-api/docs/models/gemini) for a full list.
-  * `gemini-1.5-flash`: Flash models, while free, tend to be overused and can not consistently be relied upon. If you get the response, "", the model is currently unavailable due to heavy use.
+* Gemini: Additional (untested) models are available from Gemini, and they may or may not work. See [Gemini documentation](https://ai.google.dev/gemini-api/docs/models/gemini) for a full list.
+  * `gemini-1.5-flash`: Flash models, while free, are sometimes overused and can not consistently be relied upon.
   * `gemini-1.5-pro`: Pro models are nearly always available and provide better feedback than flash models.
 
-The following models are currently planned for development.
+<!-- If you get the response, "", the model is currently unavailable due to heavy use. -->
 
-* OpenAI
-* Anaconda AI-Navigator: this offers a number of open source models of various sizes as well as the option to run everything locally.
-  * Gemma
-  * Llama
+* Anaconda AI Navigator: this offers many open source models of various sizes as well as the option to run everything locally. See the [Anaconda AI Navigator](https://www.anaconda.com/products/ai-navigator) home page for more information. Behavior of these models can be erratic within the context of a `learnr` tutorial.

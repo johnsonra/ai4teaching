@@ -88,7 +88,7 @@ check_answer("Given two variables, `x` and `y`, provide a line of R code that wi
              "x == y")
 ```
 
-    Correct.  To make it more robust, you could wrap it in an `if` statement to explicitly handle the comparison result.
+    Incorrect.  Your code checks if `x` is *equal* to `y`, not if it's greater than `y`.  Think about the operators used for comparisons like greater than or less than.
 
 In the example above, the model affirms the solution is correct and
 gives some additional feedback that might make the solution better. If
@@ -101,7 +101,7 @@ correct mistakes. The default preamble is
 cat(construct_preamble())
 ```
 
-    I'm taking a quiz. Let me know if my answer is correct. If my answer is correct, please begin your response with "Correct". If my answer is correct but could be better, please confirm and offer suggestions on how it could be better. Otherwise give me feedback on my answer. I want to know if I am on the right track. Do not give me the answer to the question. Keep your feedback brief and to the point - lets say 1-2 sentences.
+    I'm taking a quiz. Let me know if my answer is correct. If my answer is correct, please begin your response with "Correct". If my answer is correct but could be better, please confirm and offer suggestions on how it could be better. If my answer in incorrect, please give me feedback without giving me the answer. Keep your feedback brief and to the point - lets say 1-2 sentences.
 
 See `?check_answer` and `?construct_preamble` for modifying the default
 preamble.
@@ -133,23 +133,23 @@ If we try again with the correct answer we get the following:
 ## Models
 
 Below is a list of models that have been tested along with some
-comments.
+comments. OpenAI is on the short list to implement in this package, but
+it is not a current option.
 
 - Gemini: Additional (untested) models are available from Gemini, and
-  they should work. See [Gemini
+  they may or may not work. See [Gemini
   documentation](https://ai.google.dev/gemini-api/docs/models/gemini)
   for a full list.
-  - `gemini-1.5-flash`: Flash models, while free, tend to be overused
-    and can not consistently be relied upon. The most common response
-    you can expect from these models is ““, indicating the model is
-    currently unavailable due to heavy use.
+  - `gemini-1.5-flash`: Flash models, while free, are sometimes overused
+    and can not consistently be relied upon.
   - `gemini-1.5-pro`: Pro models are nearly always available and provide
     better feedback than flash models.
 
-The following models are currently planned for development.
+<!-- If you get the response, "", the model is currently unavailable due to heavy use. -->
 
-- OpenAI
-- Anaconda AI-Navigator: this offers a number of open source models of
-  various sizes as well as the option to run everything locally.
-  - Gemma
-  - Llama
+- Anaconda AI Navigator: this offers many open source models of various
+  sizes as well as the option to run everything locally. See the
+  [Anaconda AI
+  Navigator](https://www.anaconda.com/products/ai-navigator) home page
+  for more information. Behavior of these models can be erratic within
+  the context of a `learnr` tutorial.
