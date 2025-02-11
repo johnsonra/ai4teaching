@@ -5,7 +5,13 @@
 \title{genAI_query
 Query a genAI chatbot}
 \usage{
-genAI_query(query, model = "gemini-1.5-flash", history = NULL, ...)
+genAI_query(
+  query,
+  model = "gemini-1.5-flash",
+  history = NULL,
+  ai_nav = FALSE,
+  ...
+)
 }
 \arguments{
 \item{query}{character, The query for the chatbot}
@@ -13,6 +19,8 @@ genAI_query(query, model = "gemini-1.5-flash", history = NULL, ...)
 \item{model}{character, The model to use (see details)}
 
 \item{history}{list, A list of previous interactions in the conversation}
+
+\item{ai_nav}{logical, If TRUE, the function will use Anaconda AI Navigator}
 
 \item{...}{Additional arguments passed to the function handling the query (i.e. `google_genAI`)}
 }
