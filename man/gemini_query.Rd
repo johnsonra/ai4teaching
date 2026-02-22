@@ -7,7 +7,7 @@ Query Gemini}
 \usage{
 gemini_query(
   prompt,
-  model = "gemini-1.5-flash",
+  model = "gemini-2.5-flash",
   history = NULL,
   temperature = 0.5,
   maxOutputTokens = 1024,

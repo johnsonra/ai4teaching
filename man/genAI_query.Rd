@@ -7,7 +7,7 @@ Query a genAI chatbot}
 \usage{
 genAI_query(
   query,
-  model = "gemini-1.5-flash",
+  model = "gemini-2.5-flash",
   history = NULL,
   ai_nav = FALSE,
   ...

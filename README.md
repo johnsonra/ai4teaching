@@ -40,7 +40,7 @@ first need to define the variable, then make the call to `genAI_query`.
 # this is not a real an API key - you'll need to provide your own
 Sys.setenv(GEMINI_API_KEY = '123456-xyz')
 
-genAI_query("What is 1 + 1?", model = 'gemini-1.5-pro')
+genAI_query("What is 1 + 1?", model = 'gemini-2.5-pro')
 ```
 
     1 + 1 = 2
@@ -55,7 +55,7 @@ Alternately we can include the key as an argument to `genAI_query`:
 
 ``` r
 # again, this is not a real an API key - you'll need to provide your own
-genAI_query("What is 1 + 1?", model = 'gemini-1.5-pro', api_key = '123456-xyz')
+genAI_query("What is 1 + 1?", model = 'gemini-2.5-flash-lite', api_key = '123456-xyz')
 ```
 
     1 + 1 = 2
@@ -66,7 +66,7 @@ documentation](https://github.com/johnsonra/OPsecrets) for more
 discussion and examples). For example:
 
 ``` r
-genAI_query("What is 1 + 1?", model = 'gemini-1.5-pro',
+genAI_query("What is 1 + 1?", model = 'gemini-2.5-flash-lite',
             api_key = OPsecrets::get_secret('GEMINI_API_KEY', 'Private', 'Gemini', 'api_key'))
 ```
 
@@ -116,7 +116,7 @@ inside of `question_text` as follows:
                   answer_fn(function(value){
                     retval <- check_answer("Given two variables, `x` and `y`, provide a line of R code that will check if `x` is greater than `y`",
                                            value,
-                                           model = "gemini-1.5-pro",
+                                           model = "gemini-2.5-flash-lite",
                                            api_key = OPsecrets::get_secret('GEMINI_API_KEY', 'Private', 'Gemini', 'api_key'))
                   }), allow_retry = TRUE)
     ```
@@ -140,10 +140,9 @@ it is not a current option.
   they may or may not work. See [Gemini
   documentation](https://ai.google.dev/gemini-api/docs/models/gemini)
   for a full list.
-  - `gemini-1.5-flash`: Flash models, while free, are sometimes overused
-    and can not consistently be relied upon.
-  - `gemini-1.5-pro`: Pro models are nearly always available and provide
-    better feedback than flash models.
+  - `gemini-3-flash-preview`
+  - `gemini-2.5-flash-lite`
+  - `gemini-2.5-flash`
 
 <!-- If you get the response, "", the model is currently unavailable due to heavy use. -->
 

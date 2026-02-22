@@ -11,7 +11,7 @@
 #'
 #' @return character, The response from the chatbot
 #' @export
-genAI_query <- function(query, model = 'gemini-1.5-flash', history = NULL, ai_nav = FALSE, ...)
+genAI_query <- function(query, model = 'gemini-2.5-flash', history = NULL, ai_nav = FALSE, ...)
 {
   if(grepl("gemini", model))
     return(gemini_query(query, model, ...))
@@ -46,7 +46,7 @@ genAI_query <- function(query, model = 'gemini-1.5-flash', history = NULL, ai_na
 #' @importFrom cli cli_alert_danger cli_status cli_status_clear
 #' @importFrom httr2 request req_url_query req_headers req_body_json req_perform resp_body_json
 #' @importFrom OPsecrets get_secret
-gemini_query <- function(prompt, model = "gemini-1.5-flash", history = NULL, temperature = 0.5,
+gemini_query <- function(prompt, model = "gemini-2.5-flash", history = NULL, temperature = 0.5,
                          maxOutputTokens = 1024, api_key = NULL, ...)
 {
   if(is.null(api_key))
@@ -76,13 +76,13 @@ gemini_query <- function(prompt, model = "gemini-1.5-flash", history = NULL, tem
     return(NULL)
   }
 
-  if (!(model %in% c("gemini-1.5-flash", "gemini-1.5-pro"))) {
-    cli_alert_danger("Warning: only the following models have been tested: 'gemini-1.5-flash', 'gemini-1.5-pro'")
+  if (!(model %in% c("gemini-2.5-flash", "gemini-2.5-flash-lite", 'gemini-3-flash-preview'))) {
+    cli_alert_danger("Warning: only the following models have been tested: 'gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-3-flash-preview', ")
   }
 
 
   # build request
-  model_query <- paste0(model, "-latest:generateContent")
+  model_query <- paste0(model, ":generateContent")
   url <- "https://generativelanguage.googleapis.com/v1beta/models/" # see https://ai.google.dev/gemini-api/docs/quickstart?lang=rest for updates
 
   prompt_w_history <- history |>
