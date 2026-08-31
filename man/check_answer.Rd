@@ -9,6 +9,7 @@ check_answer(
   question,
   answer,
   solution = NULL,
+  background = NULL,
   preamble = construct_preamble(),
   ...
 )
@@ -19,6 +20,8 @@ check_answer(
 \item{answer}{character, The answer of the user}
 
 \item{solution}{character, The solution of the question}
+
+\item{background}{chracter, Additional context to include with the question}
 
 \item{preamble}{character, The preamble for the query}
 

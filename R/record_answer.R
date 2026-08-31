@@ -11,7 +11,8 @@
 #' @export
 #' @importFrom DBI dbConnect dbDisconnect dbWriteTable
 #' @importFrom dplyr mutate
-#' @importFrom RMariaDB MariaDB
+#' @importFrom rlang .data
+#' @importFrom RSQLite SQLite
 record_answer <- function(record,
                           db_path = Sys.getenv("SQLITE_DB_PATH", "submissions.sqlite"),
                           table_name = "tutorial_submissions")
@@ -28,9 +29,9 @@ record_answer <- function(record,
 
   # Process data for recording
   encrypted_record <- mutate(record,
-                             submission = encrypt_text(submission),
-                             is_correct = as.integer(is_correct), # this is stored as an integer in the db file
-                             ai_feedback = encrypt_text(ai_feedback))
+                             submission = encrypt_text(.data$submission),
+                             is_correct = as.integer(.data$is_correct), # this is stored as an integer in the db file
+                             ai_feedback = encrypt_text(.data$ai_feedback))
 
   # Set busy timeout so concurrent student writes queue instead of failing
   dbExecute(con, "PRAGMA busy_timeout=5000;")

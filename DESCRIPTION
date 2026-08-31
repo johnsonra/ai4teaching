@@ -1,6 +1,6 @@
 Package: ai4teaching
 Title: AI for Teaching
-Version: 0.1-1
+Version: 0.2
 Authors@R: c(person('Randy', 'Johnson', email = 'randall.johnson@nih.gov',
                     role = c('cre', 'aut')))
 Description: Utility package with tools for integrating AI into teaching.
@@ -9,14 +9,19 @@ Depends: R (>= 4.4)
 Remotes: johnsonra/OPsecrets
 Imports:
   cli,
+  DBI,
+  dplyr,
   httr2,
   learnr,
   OPsecrets,
+  rlang,
+  RSQLite,
+  sodium,
   stringr
 Encoding: UTF-8
 URL: https://github.com/johnsonra/ai4teaching
 Language: en-US
-RoxygenNote: 7.3.3
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+Config/roxygen2/version: 8.0.0
