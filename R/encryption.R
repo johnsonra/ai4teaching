@@ -1,6 +1,6 @@
 # encryption functions for sqlite database
 
-# Will need to generate or load a 32-byte key (store in .Renviron)
+# Will need to generate or load a 32-byte key (store in 1Password or .Renviron)
 # key <- sodium::random(32)
 # Sys.setenv(ENCRYPTION_KEY = sodium::bin2hex(key))
 

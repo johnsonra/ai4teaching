@@ -6,6 +6,7 @@
 #' @param question character, The question
 #' @param answer character, The answer of the user
 #' @param solution character, The solution of the question
+#' @param background chracter, Additional context to include with the question
 #' @param preamble character, The preamble for the query
 #' @param ... variables passed on to `genAI_query` (e.g. `model` or `api_key`)
 #'
@@ -14,18 +15,19 @@
 #' @export
 #' @importFrom learnr correct incorrect
 #' @importFrom stringr str_extract str_replace
-check_answer <- function(question, answer, solution = NULL,
+check_answer <- function(question, answer, solution = NULL, background = NULL,
                          preamble = construct_preamble(), ...)
 {
   query <- paste(preamble,
-        paste("Question:", question),
-        paste("Answer:", answer),
-        sep = '\n')
+                 background,
+           paste("Question:", question),
+           paste("Answer:", answer),
+                 sep = '\n')
 
   if(!is.null(solution))
   {
     query <- paste(query,
-                   paste("Solution:", solution),
+                   paste("Example solution:", solution),
                    sep = '\n')
   }
 
@@ -65,6 +67,7 @@ construct_preamble <- function(course = NULL, altPreamble = NULL)
     retval <- paste("I'm taking a quiz.",
                     "Let me know if my answer is correct.",
                     'If my answer is correct, please begin your response with "Correct".',
+                    'If my answer is incorrect, begin your response with "Incorrect."',
                     "If my answer is correct but could be better, please confirm and offer suggestions on how it could be better.",
                     "If my answer in incorrect, please give me feedback without giving me the answer.",
                     "Keep your feedback brief and to the point - lets say 1-2 sentences.")
