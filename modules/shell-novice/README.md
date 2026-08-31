@@ -13,7 +13,7 @@ git clone https://github.com/johnsonra/ai4teaching
 Copy this `shell-novice/` directory to the Shiny server directory, for example:
 
 ```bash
-cp -r ~/ai4teaching/modules/shell-novice /srv/shiny-server/.
+cp -r ~/ai4teaching/modules/shell-novice /srv/shiny-server/shell-novice.
 ```
 
 Initialize the database with something like:

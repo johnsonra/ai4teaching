@@ -70,7 +70,9 @@ fluidRow(
 
 <!-- Instructions -->
 
+```{r echo=FALSE}
 shiny::HTML('<iframe width="560" height="315" src="https://www.youtube.com/embed/dyIUJtXSSUQ?si=an4D8a5X4AxVuDY2" title="Instructions" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>')
+```
 
 ## [Introduction to the shell](https://swcarpentry.github.io/shell-novice/01-intro.html)
 
