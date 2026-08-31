@@ -1,0 +1,171 @@
+---
+title: "Intro to and Navigating the Unix Shell"
+output:
+  learnr::tutorial:
+    progressive: true
+    allow_skip: false
+    allow_retry: true
+runtime: shiny_prerendered
+description: "Learn the basics of the Unix shell"
+---
+
+## Instructions
+
+```{r setup, include=FALSE}
+# SW Carpentry less plans are at https://swcarpentry.github.io/shell-novice/index.html
+# Notes for the videos can be found at https://github.com/johnsonra/shell-novice
+library(learnr)
+library(RCurl)
+library(ai4teaching)
+
+# Set global / environmental variables
+if(file.exists(file.path('/var', 'shiny', '.Renviron')))
+  readRenviron("/var/shiny/.Renviron")
+
+if(Sys.getenv("ENCRYPTION_KEY") == "")
+  Sys.setenv(ENCRYPTION_KEY = OPsecrets::get_secret("ENCRYPTION_KEY", "Private", "learnr", "key_hex"))
+
+Sys.setenv(AI_MODEL = "gemini-3.7-flash")
+
+if(Sys.getenv("GEMINI_API_KEY") == "")
+  Sys.setenv(GEMINI_API_KEY = OPsecrets::get_secret("GEMINI_API_KEY", "Private", "Gemini", "ai4teaching_key"))
+```
+
+```{r recording-ai-feedback, context="server"}
+learnr::event_register_handler("question_submission", function(session, event, data) {
+  # data contains:
+  # - data$label: Chunk / question ID
+  # - data$answer: The raw text/input submitted by the student
+  # - data$correct: TRUE/FALSE (from mark_as)
+  # - data$message: The custom feedback text returned by mark_as()
+  
+  # Fallback for message retrieval if nested in data$feedback
+  feedback_msg <- if (!is.null(data$message)) {
+    data$message
+  } else if (!is.null(data$feedback$message)) {
+    data$feedback$message
+  } else {
+    NA_character_
+  }
+
+  record <- data.frame(
+    student_id  = ifelse(is.null(session$input$student_email), "anonymous", session$input$student_email),
+    question_id = data$label,
+    submission  = paste(data$answer, collapse = " | "),
+    is_correct  = data$correct,
+    ai_feedback = feedback_msg,
+    timestamp   = as.character(Sys.time()),
+    stringsAsFactors = FALSE
+  )
+
+  record_answer(record)
+})
+```
+
+```{r student-info, echo=FALSE}
+fluidRow(
+  column(6, textInput("student_email", "Email Address:", placeholder = "e.g. me@hood.edu"))
+)
+```
+
+<!-- Include a short introduction to get people into a terminal shell -->
+
+## [Introduction to the shell](https://swcarpentry.github.io/shell-novice/01-intro.html)
+
+```{r echo=FALSE}
+# Embed standard YouTube iframe
+shiny::HTML('<iframe width="560" height="315" src="https://www.youtube.com/embed/1iPO0AHqcMY?si=SVvHE5xLOLU_RSPx" title="Introduction to the Shell" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>')
+```
+
+### [Navigating Files and Directories - Part 1](https://swcarpentry.github.io/shell-novice/instructor/02-filedir.html)
+
+<!-- Shell02a v26 -->
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Rzy5OT6__Ig?si=NWhpLWkbjQFGBphm" title="Navigating Files and Directories - Part 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+```{r q1_1, echo=FALSE}
+question_text("You can also use two options at the same time. What does the command `ls` do when used with the `-l` option? What about if you use both the `-l` and the `-h` option? Some of its output is about properties that we do not cover in this lesson (such as file permissions and ownership), but the rest should be useful nevertheless.",
+              answer_fn(function(value){
+                check_answer("What does the command `ls` do when used with the `-l` option? What about if you use both the `-l` and the `-h` option?",
+                             value,
+                             model = Sys.getenv("AI_MODEL"),
+                             api_key = OPsecrets::get_secret('GEMINI_API_KEY', 'Private', 'Gemini', 'api_key'))
+                }), allow_retry = TRUE)
+```
+
+## [Navigating Files and Directories - Part 2](https://swcarpentry.github.io/shell-novice/instructor/02-filedir.html)
+
+<!-- Shell02b v26 -->
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/ot8cbXFRMtQ?si=eFLWuClUnkMad7GJ" title="Navigating Files and Directories - Part 2" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+```{r q1_2, echo=FALSE}
+question_text("By default, `ls` lists the contents of a directory in alphabetical order by name. The command `ls -t` lists items by time of last change instead of alphabetically. The command `ls -r` lists the contents of a directory in reverse order. Which file is displayed last when you combine the `-t` and `-r` options? Hint: You may need to use the `-l` option to see the last changed dates.",
+              answer_fn(function(value){
+                check_answer("By default, `ls` lists the contents of a directory in alphabetical order by name. The command `ls -t` lists items by time of last change instead of alphabetically. The command `ls -r` lists the contents of a directory in reverse order. Which file is displayed last when you combine the `-t` and `-r` options? Hint: You may need to use the `-l` option to see the last changed dates.",
+                             value,
+                             model = Sys.getenv("AI_MODEL"),
+                             api_key = OPsecrets::get_secret('GEMINI_API_KEY', 'Private', 'Gemini', 'api_key'))
+                }), allow_retry = TRUE)
+```
+
+## [Navigating Files and Directories - Part 3](https://swcarpentry.github.io/shell-novice/instructor/02-filedir.html)
+
+<!-- Shell02c v26 -->
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/ifNgeemDKHY?si=vGchMSIRFLDcR-jX" title="Navigating Files and Directories - Part 3" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+![A file directory diagram with "Users" at the top, containing folders, "thing" and "backup". The "thing" directory contains a different "backup" directory, which in turn contains three directories labeled with the dates of three different backups. The "backup" directory under "Users" contains three directories: "original", "pnas_final" and "pnas_sub"](https://swcarpentry.github.io/shell-novice/fig/filesystem-challenge.svg)
+
+```{r q1_3, echo=FALSE}
+question("Starting from `/Users/nelle/data`, which of the following commands could Nelle use to navigate to her home directory, which is `/Users/nelle`?",
+         answer("cd .", message = "This will take you to the current directory."),
+         answer("cd /", message = "This will take you to the root directory."),
+         answer("cd /home/nelle", message = "This will take you to the /home/nelle directory."),
+         answer("cd ../.." , message = "This will take you up two directories."),
+         answer("cd ~", correct = TRUE),
+         answer("cd home", message = "This will take you to /Users/nelle/data/home/ (if it exists)."),
+         answer("cd ~/data/..", correct = TRUE),
+         answer("cd", correct = TRUE),
+         answer("cd ..", correct = TRUE),
+         allow_retry = TRUE)
+```
+
+## [Navigating Files and Directories - Part 4](https://swcarpentry.github.io/shell-novice/instructor/02-filedir.html)
+
+<!-- Shell02d v26 -->
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/6fVa95mp6Uk?si=T-nnVxg1wZBdgb6-" title="Navigating Files and Directories - Part 4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+![](https://swcarpentry.github.io/shell-novice/fig/filesystem-challenge.svg)
+
+```{r q1_4, echo=FALSE}
+question("Using the filesystem diagram above, if `pwd` displays `/Users/thing`, what will `ls -F ../backup` display?",
+         answer("`../backup: No such file or directory`"),
+         answer("`2012-12-01 2013-01-08 2013-01-27`", message = "This would be the result for `ls backup`"),
+         answer("`2012-12-01/ 2013-01-08/ 2013-01-27/`", message = "This would be the result for `ls -F backup`"),
+         answer("`original/ pnas_final/ pnas_sub/`", correct = TRUE),
+         allow_retry = TRUE)
+```
+
+## [Navigating Files and Directories - Part 5](https://swcarpentry.github.io/shell-novice/instructor/02-filedir.html)
+
+<!-- Shell02e v26 -->
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/QwtbkQvzREM?si=g6PN7DWhL9Jwp750" title="Navigating Files and Directories - Part 6" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+```{r q1_5, echo=FALSE}
+question("Using the same filesystem diagram as above, if `pwd` displays `/Users/backup`, and `-r` tells `ls` to display things in reverse order, what command(s) will result in the following output: `pnas_sub/ pnas_final/ original/`",
+         answer("`ls pwd`", message = "This would return an error: `ls: pwd: No such file or directory`."),
+         answer("`ls -r -F`", correct = TRUE),
+         answer("`ls -r -F /Users/backup`", correct = TRUE),
+         allow_retry = TRUE)
+```
+
+## [Navigating Files and Directories - Part 5](https://swcarpentry.github.io/shell-novice/instructor/02-filedir.html)
+
+<!-- Shell 02f -->
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/o6ZE0QvMjHQ?si=UvdUrdlsHoJm_bZK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+<!-- Submit -->

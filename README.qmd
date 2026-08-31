@@ -79,7 +79,7 @@ check_answer("Given two variables, `x` and `y`, provide a line of R code that wi
 
     Incorrect.  Your code checks if `x` is *equal* to `y`, not if it's greater than `y`.  Think about the operators used for comparisons like greater than or less than.
 
-In the example above, the model affirms the solution is correct and gives some additional feedback that might make the solution better. If it is not correct, we would like the model to give us feedback without giving the answer away. `check_answer` also includes a `preamble` argument that instructs the model to give feedback rather than to correct mistakes. The default preamble is
+In the example above, the model indicates the solution is incorrect and gives us feedback without giving the answer away. `check_answer` also includes a `preamble` argument that instructs the model to give feedback rather than to correct mistakes. The default preamble is
 
 ```{r}
 cat(construct_preamble())
@@ -111,6 +111,14 @@ When rendered in `learnr` an incorrect answer will look something like this:
 If we try again with the correct answer we get the following:
 
 ![](img/learnr_correct.png)
+
+#### Testing
+
+You can try out one of the included modules with
+
+```R
+rmarkdown::run(file.path('modules', 'shell-novice', '01_intro_nav.Rmd'))
+```
 
 ## Models
 
