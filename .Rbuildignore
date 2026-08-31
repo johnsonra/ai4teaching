@@ -6,3 +6,5 @@ README*
 img/
 .github/
 modules/
+
+^.*\.sqlite$

@@ -45,12 +45,11 @@ genAI_query <- function(query, model = 'gemini-2.5-flash', history = NULL, ai_na
 #' @export
 #' @importFrom cli cli_alert_danger cli_status cli_status_clear
 #' @importFrom httr2 request req_url_query req_headers req_body_json req_perform resp_body_json
-#' @importFrom OPsecrets get_secret
 gemini_query <- function(prompt, model = "gemini-2.5-flash", history = NULL, temperature = 0.5,
                          maxOutputTokens = 1024, api_key = NULL, ...)
 {
   if(is.null(api_key))
-    api_key <- get_secret("GEMINI_API_KEY")
+    api_key <- Sys.getenv("GEMINI_API_KEY")
 
   if(is.null(history))
   {
@@ -76,8 +75,8 @@ gemini_query <- function(prompt, model = "gemini-2.5-flash", history = NULL, tem
     return(NULL)
   }
 
-  if (!(model %in% c("gemini-2.5-flash", "gemini-2.5-flash-lite", 'gemini-3-flash-preview'))) {
-    cli_alert_danger("Warning: only the following models have been tested: 'gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-3-flash-preview', ")
+  if (!(model %in% c("gemini-2.5-flash", "gemini-2.5-flash-lite", 'gemini-3-flash-preview', 'gemini-3.7-flash'))) {
+    cli_alert_danger("Warning: only the following models have been tested: gemini-2.5-flash, gemini-2.5-flash-lite, gemini-3-flash-preview, gemini-3.7-flash")
   }
 
 
