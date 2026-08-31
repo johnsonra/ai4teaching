@@ -70,16 +70,11 @@ fluidRow(
 
 <!-- Instructions -->
 
-```{r echo=FALSE}
-shiny::HTML('<iframe width="560" height="315" src="https://www.youtube.com/embed/dyIUJtXSSUQ?si=an4D8a5X4AxVuDY2" title="Instructions" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>')
-```
+<iframe width="560" height="315" src="https://www.youtube.com/embed/dyIUJtXSSUQ?si=an4D8a5X4AxVuDY2" title="Instructions" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ## [Introduction to the shell](https://swcarpentry.github.io/shell-novice/01-intro.html)
 
-```{r echo=FALSE}
-# Embed standard YouTube iframe
-shiny::HTML('<iframe width="560" height="315" src="https://www.youtube.com/embed/1iPO0AHqcMY?si=SVvHE5xLOLU_RSPx" title="Introduction to the Shell" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>')
-```
+<iframe width="560" height="315" src="https://www.youtube.com/embed/1iPO0AHqcMY?si=SVvHE5xLOLU_RSPx" title="Introduction to the Shell" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 ### [Navigating Files and Directories - Part 1](https://swcarpentry.github.io/shell-novice/instructor/02-filedir.html)
 
