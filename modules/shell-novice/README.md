@@ -34,3 +34,7 @@ chown shiny:shinyAdmin --recursive /var/shiny
 chmod 770 /var/shiny
 chmod 660 /var/shiny/*
 ```
+
+### Load the module
+
+When loading the module, you should use a url something like [https://server.com/shell-novice/01_intro_nav.Rmd](https://server.com/shell-novice/01_intro_nav.Rmd).
