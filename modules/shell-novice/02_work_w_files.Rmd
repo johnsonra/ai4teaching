@@ -1,0 +1,404 @@
+---
+title: "Working With Files and Directories"
+output:
+  learnr::tutorial:
+    progressive: true
+    allow_skip: false
+    allow_retry: true
+runtime: shiny_prerendered
+description: "Learn how to create, copy, edit, move and delete files and directories."
+---
+
+## Instructions
+
+```{r setup, include=FALSE}
+# SW Carpentry less plans are at https://swcarpentry.github.io/shell-novice/index.html
+# Notes for the videos can be found at https://github.com/johnsonra/shell-novice
+library(learnr)
+library(RCurl)
+library(ai4teaching)
+
+# Set global / environmental variables
+if(file.exists(file.path('/var', 'shiny', '.Renviron')))
+  readRenviron("/var/shiny/.Renviron")
+
+if(Sys.getenv("ENCRYPTION_KEY") == "")
+  Sys.setenv(ENCRYPTION_KEY = OPsecrets::get_secret("ENCRYPTION_KEY", "Private", "learnr", "key_hex"))
+
+Sys.setenv(AI_MODEL = "gemini-3.7-flash")
+
+if(Sys.getenv("GEMINI_API_KEY") == "")
+  Sys.setenv(GEMINI_API_KEY = OPsecrets::get_secret("GEMINI_API_KEY", "Private", "Gemini", "ai4teaching_key"))
+```
+
+```{r recording-ai-feedback, context="server"}
+learnr::event_register_handler("question_submission", function(session, event, data) {
+  # data contains:
+  # - data$label: Chunk / question ID
+  # - data$answer: The raw text/input submitted by the student
+  # - data$correct: TRUE/FALSE (from mark_as)
+  # - data$message: The custom feedback text returned by mark_as()
+  
+  # Fallback for message retrieval if nested in data$feedback
+  feedback_msg <- if (!is.null(data$message)) {
+    data$message
+  } else if (!is.null(data$feedback$message)) {
+    data$feedback$message
+  } else {
+    NA_character_
+  }
+
+  record <- data.frame(
+    student_id  = ifelse(is.null(session$input$student_email), "anonymous", session$input$student_email),
+    question_id = data$label,
+    submission  = paste(data$answer, collapse = " | "),
+    is_correct  = data$correct,
+    ai_feedback = feedback_msg,
+    timestamp   = as.character(Sys.time()),
+    stringsAsFactors = FALSE
+  )
+
+  record_answer(record)
+})
+```
+
+```{r student-info, echo=FALSE}
+fluidRow(
+  column(6, textInput("student_email", "Email Address:", placeholder = "e.g. me@hood.edu"))
+)
+```
+
+<!-- Instructions -->
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/dyIUJtXSSUQ?si=an4D8a5X4AxVuDY2" title="Instructions" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+## [Creating directories](https://swcarpentry.github.io/shell-novice/03-create.html#creating-directories)
+
+<!-- Shell03a v26 -->
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/5J8r3W8W3A4?si=hlIJA39rgYTe1jX-" title="Creating directories" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+We have seen how to create text files using the `nano` editor. Now, try running this command in your terminal and answer the following questions:
+
+```bash
+touch my_file.txt
+```
+
+```{r q2_1, echo=FALSE}
+question_text("What did the `touch` command do?",
+              answer_fn(function(value){
+                check_answer("What did the `touch` command do?",
+                             value,
+                             background = "We have seen how to create text files using the `nano` editor, and I was just instructed to run `touch my_file.txt` in my terminal.",
+                             model = Sys.getenv("AI_MODEL"),
+                             api_key = OPsecrets::get_secret('GEMINI_API_KEY', 'Private', 'Gemini', 'api_key'))
+                }), allow_retry = TRUE)
+```
+
+```{r q2_2, echo=FALSE}
+question_text("Use `ls -l` to inspect the files. How large is `my_file.txt`",
+              answer_fn(function(value){
+                check_answer("Use `ls -l` to inspect the files. How large is `my_file.txt`",
+                             value,
+                             background = "We have seen how to create text files using the `nano` editor, and I was just instructed to run `touch my_file.txt`, followed by `ls -l` in my terminal.",
+                             model = Sys.getenv("AI_MODEL"),
+                             api_key = OPsecrets::get_secret('GEMINI_API_KEY', 'Private', 'Gemini', 'api_key'))
+                }), allow_retry = TRUE)
+```
+
+```{r q2_3, echo=FALSE}
+question_text("When might we want to create a file this way?",
+              answer_fn(function(value){
+                check_answer("What are some examples of when we would want to crete a file on the command line using `touch`?",
+                             value,
+                             background = "We have seen how to create text files using the `nano` editor, and I was just instructed to try out the `touch my_file.txt` command in my terminal.",
+                             model = Sys.getenv("AI_MODEL"),
+                             api_key = OPsecrets::get_secret('GEMINI_API_KEY', 'Private', 'Gemini', 'api_key'))
+                }), allow_retry = TRUE)
+```
+
+
+## [Moving files and directories](https://swcarpentry.github.io/shell-novice/03-create.html#moving-files-and-directories)
+
+<!-- Shell03b v26 -->
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/4AuS108-Nfo?si=i92S1Yj3o0jCIb69" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+After running the following commands, Jamie realizes that she put the files `sucrose.dat` and `maltose.dat` into the wrong folder. The files should have been placed in the `raw` folder.
+
+```bash
+ls -F
+```
+
+> analyzed/ raw/
+
+```bash
+ls -F analyzed
+```
+
+> fructose.dat glucose.dat maltose.dat sucrose.dat
+
+```bash
+cd analyzed
+```
+
+Fill in the blanks to move these files to the `raw/` folder (i.e. the one she meant to put them in)
+
+```bash
+mv sucrose.dat maltose.dat ____/____
+```
+
+```{r q2_4, echo=FALSE}
+question_text("What command should Jamie run to fix this?",
+              placeholder = "mv sucrose.dat maltose.dat ____/____",
+              answer_fn(function(value){
+                check_answer("Jamie has accidentally saved `sucrose.dat` and `maltose.dat` in the `analyzed/` directory, but she meant to save them in the `raw/` directory. What command should she use to move these files into the `raw/` directory? (She is currently in the `analyzed/` directory and needs to move the files up on directory and down into `raw/`)",
+                             value,
+                             solution = "mv sucrose.dat maltose.dat ../raw",
+                             model = Sys.getenv("AI_MODEL"),
+                             api_key = OPsecrets::get_secret('GEMINI_API_KEY', 'Private', 'Gemini', 'api_key'))
+                }), allow_retry = TRUE)
+```
+
+## [Copying files and directories](https://swcarpentry.github.io/shell-novice/03-create.html#copying-files-and-directories)
+
+<!-- Shell03c v26 -->
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/8qc6PRwOfWM?si=_BoyVaRGnYPvainS" title="Copying files and directories" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+Suppose that you created a plain-text file in your current directory to contain a list of the statistical tests you will need to do to analyze your data, and named it `statstics.txt`.
+
+After creating and saving this file you realize you misspelled the filename!
+
+```{r q2_5, echo=FALSE}
+question("You want to correct the mistake, which of the following commands could you use to do so?",
+         answer("cp statstics.txt statistics.txt", message = "This is almost correct, but since we use `cp`, it will leave the original, mis-spelled file intact in addition to creating a correctly spelled version."),
+         answer("mv statstics.txt statistics.txt", correct = TRUE),
+         answer("mv statstics.txt .", message = "This will overwrite `statstics.txt` with itself, leaving the original spelling mistake unfixed."),
+         answer("cp statstics.txt ." , message = "This will overwrite `statstics.txt` with itself, leaving the original spelling mistake unfixed."),
+         allow_retry = TRUE)
+```
+
+<!-- Shell03d v26 -->
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/LZADZu0A8Ok?si=dL5n952-YQhG-MeZ" title="Moving and copying challenge" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+What is the output of the closing `ls` command in the sequence shown below?
+
+```bash
+pwd
+```
+
+> /Users/jamie/data
+
+```bash
+ls
+```
+
+> proteins.dat
+
+```bash
+mkdir recombined
+mv proteins.dat recombined/
+cp recombined/proteins.dat ../proteins-saved.dat
+ls
+```
+
+```{r q2_6, echo=FALSE}
+question("What is the output from the closing `ls` command above?",
+         answer("proteins-saved.dat recombined", message = "`proteins-saved.dat` was copied to `/Users/jamie/` and won't be listed by `ls`."),
+         answer("recombined", correct = TRUE),
+         answer("proteins.dat recombined", message = "`proteins.dat` was moved into `recombined/` and won't be lsited by `ls`."),
+         answer("proteins-saved.dat" , message = "`proteins-saved.dat` was copied to `/Users/jamie/` and won't be listed by `ls`."),
+         allow_retry = TRUE)
+```
+
+## [Removing files and directories](https://swcarpentry.github.io/shell-novice/03-create.html#removing-files-and-directories)
+
+<!-- Shell03e v26 -->
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/PRgEn92Z_yQ?si=0_PetDkG8U0Cyz19" title="Removing files and directories" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+```{r q2_7, echo=FALSE}
+question_text("What happens when we execute `rm -i thesis_backup/quotations.txt`?",
+              answer_fn(function(value){
+                check_answer("I have a text file at `thesis_backup/quoataions.txt`. What happens when I execute `rm -i thesis_backup/quotations.txt` on the command line?",
+                             value,
+                             model = Sys.getenv("AI_MODEL"),
+                             api_key = OPsecrets::get_secret('GEMINI_API_KEY', 'Private', 'Gemini', 'api_key'))
+                }), allow_retry = TRUE)
+```
+
+```{r q2_8, echo=FALSE}
+question_text("Why would we want this protection when using rm?",
+              answer_fn(function(value){
+                check_answer("Why might we want to use the `-i` option with `rm`?",
+                             value,
+                             model = Sys.getenv("AI_MODEL"),
+                             api_key = OPsecrets::get_secret('GEMINI_API_KEY', 'Private', 'Gemini', 'api_key'))
+                }), allow_retry = TRUE)
+```
+
+## [Operations with multiple files and directories](https://swcarpentry.github.io/shell-novice/03-create.html#operations-with-multiple-files-and-directories)
+
+<!-- Shell03f v26 -->
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Ssr7GwXbDeg?si=TGvqYDWIfzm0UzvI" title="Operations with multiple files and directories" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+In the example below, what does `cp` do when given three or more file names?
+
+```bash
+cp minotaur.dat unicorn.dat basilisk.dat
+```
+
+```{r q2_9, echo=FALSE}
+question_text("What does this `cp` command do?",
+              answer_fn(function(value){
+                check_answer("What happens if we try to give `cp` three files with no directory on the end? Specifically, what will this command do? `cp minotaur.dat unicorn.dat basilisk.dat`",
+                             value,
+                             background="We have been discussing operations with multiple files and directories (e.g. `cp a.txt b.txt c/`)",
+                             model = Sys.getenv("AI_MODEL"),
+                             api_key = OPsecrets::get_secret('GEMINI_API_KEY', 'Private', 'Gemini', 'api_key'))
+                }), allow_retry = TRUE)
+```
+
+## Wild cards
+
+<!-- Shell03g v26 -->
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/068H-WUPJBY?si=oIMcoA0uf9Zl9Yxo" title="Wild cards" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+When running `ls` in the `shell-lesson-data/exercise-data/alkanes/` directory, we get the following output:
+
+> cubane.pdb  ethane.pdb  methane.pdb  octane.pdb  pentane.pdb  propane.pdb
+
+Which `ls` command(s) will produce this output?
+
+> ethane.pdb methane.pdb
+
+```{r q2_10, echo=FALSE}
+question("Which command will return `ethane.pdb` and `methane.pdb` and no other files?",
+         answer("ls *t*ane.pdb", message = "This looks for file names with an arbitrary number of letters between 't' and 'ane.pdb', which returns too many files."),
+         answer("ls *t?ne.*", message = "This looks for file names with exactly one letter between 't' and 'n', whicn returns `octane.pdb` and `pentane.pdb`"),
+         answer("ls *t??ne.pdb", correct = TRUE),
+         answer("ls ethane.*" , message = 'Only one file starts with "ethane.": `ethane.pdb`'),
+         allow_retry = TRUE)
+```
+
+## Additional challenge
+
+<!-- Shell03h v26 -->
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/hW1eUugbYZY?si=ABs6_qy1aXB66d7s" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+You're starting a new experiment and would like to duplicate the directory structure from your previous experiment so you can add new data.
+
+Assume that the previous experiment is in a folder called `2026-05-18/`, which contains a data folder that in turn contains folders named raw and processed that contain data files. The goal is to copy the folder structure of the `2026-05-18/` folder into a folder called `2026-05-20/` so that your final directory structure looks like this:
+
+```bash
+2016-05-20/
+└── data
+   ├── processed
+   └── raw
+```
+
+Which of the following set of commands would achieve this objective? What will the other commands do?
+
+```bash
+# first set of commands
+mkdir 2026-05-20
+mkdir 2026-05-20/data
+mkdir 2026-05-20/data/processed
+mkdir 2026-05-20/data/raw
+```
+
+```{r q2_11, echo=FALSE}
+question_text("Will this first set of commands create the desired file structure? If not, what will it do?",
+              answer_fn(function(value){
+                check_answer("Will these commands create the desired file structure? If not what will they do? Commands: mkdir 2026-05-20 \n mkdir 2026-05-20/data \n mkdir 2026-05-20/data/processed \n mkdir 2026-05-20/data/raw",
+                             value,
+                             background="You're starting a new experiment and would like to duplicate the directory structure from your previous experiment so you can add new data. Assume that the previous experiment is in a folder called `2026-05-18/`, which contains a data folder that in turn contains folders named raw and processed that contain data files. The goal is to copy the folder structure of the `2026-05-18/` folder into a folder called `2026-05-20/` so that `2016-05-20/` contains the `data/` directory, and `data/` contains two folders, `processed/` and `raw/`.",
+                             model = Sys.getenv("AI_MODEL"),
+                             api_key = OPsecrets::get_secret('GEMINI_API_KEY', 'Private', 'Gemini', 'api_key'))
+                }), allow_retry = TRUE)
+```
+
+```bash
+# second set of commands
+mkdir 2026-05-20
+cd 2026-05-20
+mkdir data
+cd data
+mkdir raw processed
+```
+
+```{r q2_12, echo=FALSE}
+question_text("Will this second set of commands create the desired file structure? If not, what will it do?",
+              answer_fn(function(value){
+                check_answer("Will these commands create the desired file structure? If not what will they do? Commands: mkdir 2026-05-20 \n cd 2026-05-20 \n mkdir data \n cd data \n mkdir raw processed",
+                             value,
+                             background="You're starting a new experiment and would like to duplicate the directory structure from your previous experiment so you can add new data. Assume that the previous experiment is in a folder called `2026-05-18/`, which contains a data folder that in turn contains folders named raw and processed that contain data files. The goal is to copy the folder structure of the `2026-05-18/` folder into a folder called `2026-05-20/` so that `2016-05-20/` contains the `data/` directory, and `data/` contains two folders, `processed/` and `raw/`.",
+                             model = Sys.getenv("AI_MODEL"),
+                             api_key = OPsecrets::get_secret('GEMINI_API_KEY', 'Private', 'Gemini', 'api_key'))
+                }), allow_retry = TRUE)
+```
+
+```bash
+# third set of commands
+mkdir 2026-05-20/data/raw
+mkdir 2026-05-20/data/processed
+```
+
+```{r q2_13, echo=FALSE}
+question_text("Will this third set of commands create the desired file structure? If not, what will it do?",
+              answer_fn(function(value){
+                check_answer("Will these commands create the desired file structure? If not what will they do? Commands: mkdir 2026-05-20/data/raw \n mkdir 2026-05-20/data/processed",
+                             value,
+                             background="You're starting a new experiment and would like to duplicate the directory structure from your previous experiment so you can add new data. Assume that the previous experiment is in a folder called `2026-05-18/`, which contains a data folder that in turn contains folders named raw and processed that contain data files. The goal is to copy the folder structure of the `2026-05-18/` folder into a folder called `2026-05-20/` so that `2026-05-20/` contains the `data/` directory, and `data/` contains two folders, `processed/` and `raw/`.",
+                             solution="This almost does the trick, except that we would need to either first create `2026-05-20/` and `data/` or use the `-p` option to create them along with `raw/` and `processed/`. As it now stands, this will generate an error stating that `2026-05-20/data/` doesn't exist.",
+                             model = Sys.getenv("AI_MODEL"),
+                             api_key = OPsecrets::get_secret('GEMINI_API_KEY', 'Private', 'Gemini', 'api_key'))
+                }), allow_retry = TRUE)
+```
+
+```bash
+# fourth set of commands
+mkdir -p 2026-05-20/data/raw
+mkdir -p 2026-05-20/data/processed
+```
+
+```{r q2_14, echo=FALSE}
+question_text("Will this fourth set of commands create the desired file structure? If not, what will it do?",
+              answer_fn(function(value){
+                check_answer("Will these commands create the desired file structure? If not what will they do? Commands: mkdir -p 2026-05-20/data/raw \n mkdir -p 2026-05-20/data/processed",
+                             value,
+                             background="You're starting a new experiment and would like to duplicate the directory structure from your previous experiment so you can add new data. Assume that the previous experiment is in a folder called `2026-05-18/`, which contains a data folder that in turn contains folders named raw and processed that contain data files. The goal is to copy the folder structure of the `2026-05-18/` folder into a folder called `2026-05-20/` so that `2026-05-20/` contains the `data/` directory, and `data/` contains two folders, `processed/` and `raw/`.",
+                             model = Sys.getenv("AI_MODEL"),
+                             api_key = OPsecrets::get_secret('GEMINI_API_KEY', 'Private', 'Gemini', 'api_key'))
+                }), allow_retry = TRUE)
+```
+
+```bash
+# fifth set of commands
+mkdir 2026-05-20
+cd 2026-05-20
+mkdir data
+mkdir raw processed
+```
+
+```{r q2_15, echo=FALSE}
+question_text("Will this fifth set of commands create the desired file structure? If not, what will it do?",
+              answer_fn(function(value){
+                check_answer("Will these commands create the desired file structure? If not what will they do? Commands: mkdir 2026-05-20 \n cd 2026-05-20 \n mkdir data \n mkdir raw processed",
+                             value,
+                             background="You're starting a new experiment and would like to duplicate the directory structure from your previous experiment so you can add new data. Assume that the previous experiment is in a folder called `2026-05-18/`, which contains a data folder that in turn contains folders named raw and processed that contain data files. The goal is to copy the folder structure of the `2026-05-18/` folder into a folder called `2026-05-20/` so that `2026-05-20/` contains the `data/` directory, and `data/` contains two folders, `processed/` and `raw/`.",
+                             model = Sys.getenv("AI_MODEL"),
+                             api_key = OPsecrets::get_secret('GEMINI_API_KEY', 'Private', 'Gemini', 'api_key'))
+                }), allow_retry = TRUE)
+```
+
+## Closing
+
+<!-- Shell03i v26 -->
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/PGnLocPuNxk?si=NHnqscJYBtJjbZFX" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>

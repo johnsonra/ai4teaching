@@ -120,6 +120,10 @@ You can try out one of the included modules with
 rmarkdown::run(file.path('modules', 'shell-novice', '01_intro_nav.Rmd'))
 ```
 
+#### Troubleshooting
+
+I found that copy/pasting the headers from one file to another (i.e. when starting work on a new module) sometimes resulted in some non-breaking spaces being inserted into the yaml header. This resulted in a host of weird formatting issues when the otherwise identical file that I copied from had no issues. If you run into this, try removing all spaces in the yaml header and retyping them in.
+
 ## Models
 
 Below is a list of models that have been tested along with some comments. OpenAI is on the short list to implement in this package, but it is not a current option.
