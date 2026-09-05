@@ -117,8 +117,12 @@ If we try again with the correct answer we get the following:
 You can try out one of the included modules with
 
 ```R
-rmarkdown::run(file.path('modules', 'shell-novice', '01_intro_nav.Rmd'))
+rmarkdown::run(file.path('modules', 'shell-novice', '01_intro_nav', 'index.Rmd'))
 ```
+
+#### Deploying
+
+If not deploying using Posit's automated deployment tools, you should be able to drop the Rmd files in the shiny server directory (e.g. `/srv/shiny-server/`), but if you need to render the html manually, use `rmarkdown::render`. The shiny server will assume each directory has only one shiny app, so modules will need to be in separate directories.
 
 #### Troubleshooting
 
