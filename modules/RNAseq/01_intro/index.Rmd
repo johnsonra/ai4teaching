@@ -1,0 +1,111 @@
+---
+title: "Intro to RNA-seq analysis"
+output:
+  learnr::tutorial:
+    progressive: true
+    allow_skip: false
+    allow_retry: true
+runtime: shiny_prerendered
+description: "What is RNA-seq data and where do they come from?"
+---
+
+## Introduction
+
+```{r setup, include=FALSE}
+# SW Carpentry less plans are at https://carpentries-incubator.github.io/bioc-rnaseq/index.html
+# Notes for the videos can be found at https://github.com/johnsonra/bioc-rnaseq
+library(learnr)
+library(RCurl)
+library(ai4teaching)
+
+# Set global / environmental variables
+if(file.exists(file.path('/var', 'shiny', '.Renviron')))
+  readRenviron("/var/shiny/.Renviron")
+
+if(Sys.getenv("ENCRYPTION_KEY") == "")
+  Sys.setenv(ENCRYPTION_KEY = OPsecrets::get_secret("ENCRYPTION_KEY", "Private", "learnr", "key_hex"))
+
+Sys.setenv(AI_MODEL = "gemini-3.7-flash")
+
+if(Sys.getenv("GEMINI_API_KEY") == "")
+  Sys.setenv(GEMINI_API_KEY = OPsecrets::get_secret("GEMINI_API_KEY", "Private", "Gemini", "ai4teaching_key"))
+```
+
+```{r recording-ai-feedback, context="server"}
+learnr::event_register_handler("question_submission", function(session, event, data) {
+  # data contains:
+  # - data$label: Chunk / question ID
+  # - data$answer: The raw text/input submitted by the student
+  # - data$correct: TRUE/FALSE (from mark_as)
+  # - data$message: The custom feedback text returned by mark_as()
+  
+  # Fallback for message retrieval if nested in data$feedback
+  feedback_msg <- if (!is.null(data$message)) {
+    data$message
+  } else if (!is.null(data$feedback$message)) {
+    data$feedback$message
+  } else {
+    NA_character_
+  }
+
+  record <- data.frame(
+    student_id  = ifelse(is.null(session$input$student_email), "anonymous", session$input$student_email),
+    question_id = data$label,
+    submission  = paste(data$answer, collapse = " | "),
+    is_correct  = data$correct,
+    ai_feedback = feedback_msg,
+    timestamp   = as.character(Sys.time()),
+    stringsAsFactors = FALSE
+  )
+
+  record_answer(record)
+})
+```
+
+```{r student-info, echo=FALSE}
+fluidRow(
+  column(6, textInput("student_email", "Email Address:", placeholder = "e.g. me@hood.edu"))
+)
+```
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/3st10hhkIDQ?si=PP8skpKc4hQcYOHi" title="Intro to RNA-seq analysis with Bioconductor" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+-   What are potential advantages and disadvantages of paired-end protocols compared to only sequencing one end of a fragment?
+-   What quality assessment can you think of that would be useful to perform on the FASTQ files with read sequences?
+
+*The discussion interface is still under development, so you get this one for free. Give these questions some thought before continuing to the next video, though.*
+
+## Experimental design considerations
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/bWOu311biNk?si=4KUHx7l6s2QWyej9" title="Experimental design considerations" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+-   Why is it essential to have replicates?
+
+*The discussion interface is still under development, so you get this one for free. Give these questions some thought before continuing to the next video, though.*
+
+## RNA-seq quantification & Finding reference sequences
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/q30FeaV6q04?si=aI3983BuJX9eIRlU" title="RNA-seq quantification" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+Download the latest mouse transcriptome fasta file from [GENCODE](https://www.gencodegenes.org/).
+
+:::{.callout-tip}
+-   The filename should end with "transcripts.fa.gz"
+-   Consider the `readDNAStringSet()` function from the `Biostrings` package to read the file into R.
+:::
+
+```{r q1_1, echo=FALSE}
+question_text("What do the entries look like?",
+              answer_fn(function(value){
+                check_answer("What do the entries look like?",
+                             value,
+                             background = "We have just downloaded the fasta reference file for the mouse transcriptome. I was asked to load the fasta file using `Biostrings::readDNAStringSet` and explore the data a little - nothing too advanced, though.",
+                             solution = "Students may describe the structure of the fasta file (e.g. sequence name followed by the bases in the sequence), or they may describe how it looks when printing the DNAStringSet object to the screen (i.e. shows total number of transcripts - somewhere around 480 thousand total sequences, sequence length for each one, colorful display of the first few and last few bases in the sequenct, etc...). Nothing too specific is required, but they should have looked at the file in some way and have some qualitative comments on it.",
+                             model = Sys.getenv("AI_MODEL"),
+                             api_key = OPsecrets::get_secret('GEMINI_API_KEY', 'Private', 'Gemini', 'api_key'))
+                }), allow_retry = TRUE)
+```
+
+## Looking forward
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/kzO7oN4yVbM?si=jXe-dnJ3HTMbWUWO" title="Looking forward" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
