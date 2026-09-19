@@ -13,7 +13,7 @@ git clone https://github.com/johnsonra/ai4teaching
 Copy this `shell-novice/` directory to the Shiny server directory, for example:
 
 ```bash
-cp -r ~/ai4teaching/modules/shell-novice /srv/shiny-server/shell-novice.
+cp -r ~/ai4teaching/modules/shell-novice /srv/shiny-server/shell-novice/
 ```
 
 Initialize the database with something like:
@@ -28,13 +28,13 @@ Make sure all files have the proper permissions. (In order to run my lesson summ
 
 ```bash
 # ownership
-chown shiny:shinyAdmin --recursive /var/shiny
+chown shiny:shinyAdmin --recursive /srv/shiny-server
 
 # permissions
-chmod 770 /var/shiny
-chmod 660 /var/shiny/*
+chmod 770 /srv/shiny-server
+chmod 660 /srv/shiny-server/*
 ```
 
 ### Load the module
 
-When loading the module, you should use a url something like [https://server.com/shell-novice/01_intro_nav.Rmd](https://server.com/shell-novice/01_intro_nav.Rmd).
+When loading the module, you should use a url something like [https://server.com/shell-novice/01_intro_nav/index.Rmd](https://server.com/shell-novice/01_intro_nav/index.Rmd).

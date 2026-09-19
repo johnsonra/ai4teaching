@@ -124,6 +124,8 @@ rmarkdown::run(file.path('modules', 'shell-novice', '01_intro_nav', 'index.Rmd')
 
 If not deploying using Posit's automated deployment tools, you should be able to drop the Rmd files in the shiny server directory (e.g. `/srv/shiny-server/`), but if you need to render the html manually, use `rmarkdown::render`. The shiny server will assume each directory has only one shiny app, so modules will need to be in separate directories.
 
+After copying modules to the server, be sure the `shiny` user has ownership of the directory and appropriate permissions.
+
 #### Troubleshooting
 
 I found that copy/pasting the headers from one file to another (i.e. when starting work on a new module) sometimes resulted in some non-breaking spaces being inserted into the yaml header. This resulted in a host of weird formatting issues when the otherwise identical file that I copied from had no issues. If you run into this, try removing all spaces in the yaml header and retyping them in.
